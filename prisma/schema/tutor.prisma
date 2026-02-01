@@ -1,0 +1,24 @@
+// ? tutor profile schema
+model TutorProfile {
+    id           String       @id @default(uuid())
+    userId       String       @unique
+    user         User         @relation(fields: [userId], references: [id])
+    availability Availability @default(AVAILABLE)
+    bio          String?
+
+    hourlyRate    Int               @default(0)
+    averageRating Float             @default(0)
+    totalStudents Int               @default(0)
+    createdAt     DateTime          @default(now())
+    updatedAt     DateTime          @updatedAt
+    expertise     TutorCategories[]
+    bookings      Bookings[]
+    reviews       Reviews[]
+
+    @@map("tutor")
+}
+
+enum Availability {
+    AVAILABLE
+    UNAVAILABLE
+}

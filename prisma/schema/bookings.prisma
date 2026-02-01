@@ -1,0 +1,24 @@
+// ? Bookings Schema 
+
+model Bookings {
+    id         String         @id @default(uuid())
+    studentId  String
+    student    StudentProfile @relation(fields: [studentId], references: [id])
+    tutorId    String
+    tutor      TutorProfile   @relation(fields: [tutorId], references: [id])
+    date       DateTime
+    startTime  DateTime
+    endTime    DateTime
+    status     BookingsStatus @default(CONFIRMED)
+    price      Int            @default(0)
+    reviews    Reviews?
+    ctreatedAt DateTime       @default(now())
+
+    @@index([tutorId, date, startTime])
+}
+
+enum BookingsStatus {
+    COMPLETED
+    CONFIRMED
+    CANCELLED
+}

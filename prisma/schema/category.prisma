@@ -1,0 +1,24 @@
+// ? category Schema 
+
+model Categories {
+    id     String            @id @default(uuid())
+    title  String
+    image  String?
+    tutors TutorCategories[]
+
+    @@unique([title])
+    @@map("category")
+}
+
+// ? category and tutor many to many relation junction table 
+
+model TutorCategories {
+    tutorProfileId String
+    categoryId     String
+
+    tutor    TutorProfile @relation(fields: [tutorProfileId], references: [id])
+    category Categories   @relation(fields: [categoryId], references: [id])
+
+    @@id([tutorProfileId, categoryId])
+    @@map("tutorJunction")
+}

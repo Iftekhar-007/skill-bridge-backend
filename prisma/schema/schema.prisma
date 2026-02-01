@@ -1,0 +1,200 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// // ? tutor profile schema
+// model TutorProfile {
+//   id           String       @id @default(uuid())
+//   userId       String       @unique
+//   user         User         @relation(fields: [userId], references: [id])
+//   availability Availability @default(AVAILABLE)
+//   bio          String?
+
+//   hourlyRate    Int               @default(0)
+//   averageRating Float             @default(0)
+//   totalStudents Int               @default(0)
+//   createdAt     DateTime          @default(now())
+//   updatedAt     DateTime          @updatedAt
+//   expertise     TutorCategories[]
+//   bookings      Bookings[]
+//   reviews       Reviews[]
+
+//   @@map("tutor")
+// }
+
+// enum Availability {
+//   AVAILABLE
+//   UNAVAILABLE
+// }
+
+// // ? student profile 
+
+// model StudentProfile {
+//   id        String     @id @default(uuid())
+//   userId    String     @unique
+//   user      User       @relation(fields: [userId], references: [id])
+//   phone     String?
+//   level     Int
+//   createdAt DateTime   @default(now())
+//   updatedAt DateTime   @updatedAt
+//   bookings  Bookings[]
+//   reviews   Reviews[]
+// }
+
+// // ? category Schema 
+
+// model Categories {
+//   id     String            @id @default(uuid())
+//   title  String
+//   image  String?
+//   tutors TutorCategories[]
+
+//   @@unique([title])
+//   @@map("category")
+// }
+
+// // ? category and tutor many to many relation junction table 
+
+// model TutorCategories {
+//   tutorProfileId String
+//   categoryId     String
+
+//   tutor    TutorProfile @relation(fields: [tutorProfileId], references: [id])
+//   category Categories   @relation(fields: [categoryId], references: [id])
+
+//   @@id([tutorProfileId, categoryId])
+//   @@map("tutorJunction")
+// }
+
+// // ? Bookings Schema 
+
+// model Bookings {
+//   id         String         @id @default(uuid())
+//   studentId  String
+//   student    StudentProfile @relation(fields: [studentId], references: [id])
+//   tutorId    String
+//   tutor      TutorProfile   @relation(fields: [tutorId], references: [id])
+//   date       DateTime
+//   startTime  DateTime
+//   endTime    DateTime
+//   status     BookingsStatus @default(CONFIRMED)
+//   price      Int            @default(0)
+//   reviews    Reviews?
+//   ctreatedAt DateTime       @default(now())
+
+//   @@index([tutorId, date, startTime])
+// }
+
+// enum BookingsStatus {
+//   COMPLETED
+//   CONFIRMED
+//   CANCELLED
+// }
+
+// // ? comment schema 
+
+// model Reviews {
+//   id        String         @id @default(uuid())
+//   studentId String
+//   student   StudentProfile @relation(fields: [studentId], references: [id])
+//   tutorId   String
+//   tutor     TutorProfile   @relation(fields: [tutorId], references: [id])
+//   bookingId String         @unique
+//   booking   Bookings       @relation(fields: [bookingId], references: [id])
+//   rating    Float
+//   comment   String
+//   createdAt DateTime       @default(now())
+
+//   @@map("reviews")
+// }
+
+// // ? user schema
+// model User {
+//   id             String          @id
+//   name           String
+//   email          String
+//   emailVerified  Boolean         @default(false)
+//   image          String?
+//   createdAt      DateTime        @default(now())
+//   updatedAt      DateTime        @updatedAt
+//   sessions       Session[]
+//   accounts       Account[]
+//   tutorProfile   TutorProfile?
+//   role           UserRole        @default(PUBLIC)
+//   status         UserStatus      @default(ACTIVE)
+//   studentProfile StudentProfile?
+
+//   @@unique([email])
+//   @@map("user")
+// }
+
+// model Session {
+//   id        String   @id
+//   expiresAt DateTime
+//   token     String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+//   ipAddress String?
+//   userAgent String?
+//   userId    String
+//   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   @@unique([token])
+//   @@index([userId])
+//   @@map("session")
+// }
+
+// model Account {
+//   id                    String    @id
+//   accountId             String
+//   providerId            String
+//   userId                String
+//   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   accessToken           String?
+//   refreshToken          String?
+//   idToken               String?
+//   accessTokenExpiresAt  DateTime?
+//   refreshTokenExpiresAt DateTime?
+//   scope                 String?
+//   password              String?
+//   createdAt             DateTime  @default(now())
+//   updatedAt             DateTime  @updatedAt
+
+//   @@index([userId])
+//   @@map("account")
+// }
+
+// model Verification {
+//   id         String   @id
+//   identifier String
+//   value      String
+//   expiresAt  DateTime
+//   createdAt  DateTime @default(now())
+//   updatedAt  DateTime @updatedAt
+
+//   @@index([identifier])
+//   @@map("verification")
+// }
+
+// enum UserRole {
+//   PUBLIC
+//   STUDENT
+//   TUTOR
+//   ADMIN
+// }
+
+// enum UserStatus {
+//   ACTIVE
+//   BLOCKED
+// }
