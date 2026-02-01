@@ -10,7 +10,7 @@ model User {
     sessions       Session[]
     accounts       Account[]
     tutorProfile   TutorProfile?
-    role           UserRole        @default(PUBLIC)
+    role           UserRole        @default(USER)
     status         UserStatus      @default(ACTIVE)
     studentProfile StudentProfile?
 
@@ -67,7 +67,7 @@ model Verification {
 }
 
 enum UserRole {
-    PUBLIC
+    USER
     STUDENT
     TUTOR
     ADMIN

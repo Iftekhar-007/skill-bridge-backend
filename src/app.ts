@@ -1,13 +1,13 @@
 import express from "express";
-// import { postRoute } from "./modules/Post/post.route";
-// import { toNodeHandler } from "better-auth/node";
-// import { auth } from "./lib/auth";
+import { toNodeHandler } from "better-auth/node";
 import cors from "cors";
-// import { commentRoute } from "./modules/Comments/comment.route";
+import { auth } from "./lib/auth";
+
 // import errorHandler from "./middleware/globalError";
 // import { notFound } from "./middleware/notFound";
 
 const app = express();
+const port = process.env.PORT;
 
 app.use(
   cors({
@@ -20,10 +20,7 @@ app.use(
 );
 app.use(express.json());
 
-// app.all("/api/auth/*splat", toNodeHandler(auth));
-
-// // ! post routes
-// app.use("/api/v1/posts", postRoute);
+app.all("/api/auth/*splat", toNodeHandler(auth));
 
 // // ! comment routes
 // app.use("/api/v1/comments", commentRoute);
