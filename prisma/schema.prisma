@@ -42,7 +42,7 @@ enum Availability {
 
 model StudentProfile {
   id        String     @id @default(uuid())
-  userId    String
+  userId    String     @unique
   user      User       @relation(fields: [userId], references: [id])
   phone     String?
   level     Int
@@ -80,16 +80,20 @@ model TutorCategories {
 // ? Bookings Schema 
 
 model Bookings {
-  id        String         @id @default(uuid())
-  studentId String
-  student   StudentProfile @relation(fields: [studentId], references: [id])
-  tutorId   String
-  tutor     TutorProfile   @relation(fields: [tutorId], references: [id])
-  date      DateTime
-  startTime DateTime
-  endTime   DateTime
-  status    BookingsStatus @default(CONFIRMED)
-  price     Int            @default(0)
+  id         String         @id @default(uuid())
+  studentId  String
+  student    StudentProfile @relation(fields: [studentId], references: [id])
+  tutorId    String
+  tutor      TutorProfile   @relation(fields: [tutorId], references: [id])
+  date       DateTime
+  startTime  DateTime
+  endTime    DateTime
+  status     BookingsStatus @default(CONFIRMED)
+  price      Int            @default(0)
+  reviews    Reviews?
+  ctreatedAt DateTime       @default(now())
+
+  @@index([tutorId, date, startTime])
 }
 
 enum BookingsStatus {
@@ -106,28 +110,30 @@ model Reviews {
   student   StudentProfile @relation(fields: [studentId], references: [id])
   tutorId   String
   tutor     TutorProfile   @relation(fields: [tutorId], references: [id])
-  ratings   Float
+  bookingId String         @unique
+  booking   Bookings       @relation(fields: [bookingId], references: [id])
+  rating    Float
   comment   String
   createdAt DateTime       @default(now())
 
-  @@map("Comments")
+  @@map("reviews")
 }
 
 // ? user schema
 model User {
-  id              String           @id
-  name            String
-  email           String
-  emailVerified   Boolean          @default(false)
-  image           String?
-  createdAt       DateTime         @default(now())
-  updatedAt       DateTime         @updatedAt
-  sessions        Session[]
-  accounts        Account[]
-  tutorProfile    TutorProfile?
-  role            UserRole         @default(PUBLIC)
-  status          UserStatus       @default(ACTIVE)
-  studentProfiles StudentProfile[]
+  id             String          @id
+  name           String
+  email          String
+  emailVerified  Boolean         @default(false)
+  image          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  sessions       Session[]
+  accounts       Account[]
+  tutorProfile   TutorProfile?
+  role           UserRole        @default(PUBLIC)
+  status         UserStatus      @default(ACTIVE)
+  studentProfile StudentProfile?
 
   @@unique([email])
   @@map("user")
