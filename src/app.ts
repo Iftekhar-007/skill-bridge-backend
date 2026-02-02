@@ -2,6 +2,9 @@ import express from "express";
 import { toNodeHandler } from "better-auth/node";
 import cors from "cors";
 import { auth } from "./lib/auth";
+import { userRoutes } from "./modules/user/user.routes";
+import { tutorRoutes } from "./modules/tutor/tutor.routes";
+import authMiddle from "./middlewares/auth";
 
 // import errorHandler from "./middleware/globalError";
 // import { notFound } from "./middleware/notFound";
@@ -22,8 +25,9 @@ app.use(express.json());
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
-// // ! comment routes
-// app.use("/api/v1/comments", commentRoute);
+app.use("/api/v1", userRoutes);
+
+app.use("/api/v1", tutorRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World");

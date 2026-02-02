@@ -1,11 +1,10 @@
 // ? tutor profile schema
 model TutorProfile {
-    id           String       @id @default(uuid())
-    userId       String       @unique
-    user         User         @relation(fields: [userId], references: [id])
-    availability Availability @default(AVAILABLE)
-    bio          String?
-
+    id            String            @id @default(uuid())
+    userId        String            @unique
+    user          User              @relation(fields: [userId], references: [id])
+    availability  Availability      @default(AVAILABLE)
+    bio           String?
     hourlyRate    Int               @default(0)
     averageRating Float             @default(0)
     totalStudents Int               @default(0)
