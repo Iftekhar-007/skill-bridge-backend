@@ -2,9 +2,11 @@ import express from "express";
 import { toNodeHandler } from "better-auth/node";
 import cors from "cors";
 import { auth } from "./lib/auth";
-import { userRoutes } from "./modules/user/user.routes";
+
 import { tutorRoutes } from "./modules/tutor/tutor.routes";
-import authMiddle from "./middlewares/auth";
+import { adminRoutes } from "./modules/admin/admin.routes";
+import { bookingRoutes } from "./modules/bookings/bookings.routes";
+import { studentRoutes } from "./modules/student/student.routes";
 
 // import errorHandler from "./middleware/globalError";
 // import { notFound } from "./middleware/notFound";
@@ -25,9 +27,13 @@ app.use(express.json());
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
-app.use("/api/v1", userRoutes);
+app.use("/api/v1", adminRoutes);
 
 app.use("/api/v1", tutorRoutes);
+
+app.use("/api/v1", bookingRoutes);
+
+app.use("/api/v1", studentRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World");

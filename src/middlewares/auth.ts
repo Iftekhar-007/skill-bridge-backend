@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { auth } from "../lib/auth";
 import { fromNodeHeaders } from "better-auth/node";
+import { prisma } from "../lib/prisma";
 
 export enum UserRole {
   admin = "ADMIN",
@@ -42,7 +43,7 @@ const authMiddle = (...roles: UserRole[]) => {
       role: session.user.role as string,
     };
 
-    if (!roles.length && !roles.includes(req.user.role as UserRole)) {
+    if (roles && !roles.includes(req.user.role as UserRole)) {
       return res.status(403).json({
         success: false,
         message: "Forbidden Access!! You are not allowed to access this route",
