@@ -1,18 +1,19 @@
 import express from "express";
-import { studentController } from "./student.controller";
+
 import authMiddle, { UserRole } from "../../middlewares/auth";
+import { studentController } from "./student.controller";
 
 const router = express.Router();
 
 router.get(
-  "/all-students",
+  "/students",
   authMiddle(UserRole.admin),
   studentController.getAllStudent,
 );
 
 router.post(
   "/create-student",
-  authMiddle(UserRole.tutor),
+  authMiddle(UserRole.student),
   studentController.createStudentProfile,
 );
 

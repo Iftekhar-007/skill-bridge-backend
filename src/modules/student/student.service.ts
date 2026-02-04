@@ -1,55 +1,48 @@
 import { prisma } from "../../lib/prisma";
 import { UserRole } from "../../middlewares/auth";
 
-const createStudentProfile = async (userId: string, payload: any) => {
-  const isStudentProfileAlready = await prisma.studentProfile.findUnique({
-    where: {
-      id: userId,
-    },
+type CreateStudentType = {
+  userId: string;
+  phone: string;
+  level: number;
+};
+
+const createStudentProfile = async (
+  payload: CreateStudentType,
+  userId: string,
+) => {
+  const isUserAlreadyStudent = await prisma.studentProfile.findUnique({
+    where: { userId: userId },
   });
 
-  if (isStudentProfileAlready) {
-    throw new Error("this account have already a student profile!");
+  if (isUserAlreadyStudent) {
+    throw new Error("user already has a student profile");
   }
 
-  const studentData = await prisma.user.findUnique({
-    where: {
-      id: userId,
-    },
-  });
+  const user = await prisma.user.findUnique({ where: { id: userId } });
 
-  if (studentData?.role !== UserRole.student) {
-    throw new Error("Only student can access this route!");
+  if (user?.role !== UserRole.student) {
+    throw new Error("only student can create profile!");
   }
 
-  const studentProfile = await prisma.studentProfile.create({
+  const result = await prisma.studentProfile.create({
     data: {
-      ...payload,
-      userId,
+      userId: userId,
+      phone: payload.phone,
+      level: payload.level,
     },
   });
 
-  return studentProfile;
+  return result;
 };
 
 const getAllStudent = async () => {
-  const allStudent = await prisma.studentProfile.findMany({});
-
-  return allStudent;
-};
-
-const getStudentProfileById = async (userId: string) => {
-  const data = await prisma.studentProfile.findUnique({
-    where: {
-      userId: userId,
-    },
-  });
+  const data = await prisma.studentProfile.findMany();
 
   return data;
 };
 
 export const studentService = {
-  getStudentProfileById,
-  getAllStudent,
   createStudentProfile,
+  getAllStudent,
 };

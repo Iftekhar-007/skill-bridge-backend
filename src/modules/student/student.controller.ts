@@ -3,16 +3,16 @@ import { studentService } from "./student.service";
 
 const createStudentProfile = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.params;
+    const user = req.user;
 
-    const result = await studentService.createStudentProfile(
-      userId as string,
+    const data = await studentService.createStudentProfile(
       req.body,
+      user?.id as string,
     );
 
-    res.status(200).json({ success: true, data: result });
+    res.status(200).json({ success: true, data: data });
   } catch (err: any) {
-    res.status(401).json({ success: false, message: err.message });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
@@ -20,13 +20,13 @@ const getAllStudent = async (req: Request, res: Response) => {
   try {
     const result = await studentService.getAllStudent();
 
-    res.status(200).json({ success: true, data: result });
+    res.status(201).json({ success: true, data: result });
   } catch (err: any) {
     res.status(404).json({ success: false, message: err.message });
   }
 };
 
 export const studentController = {
-  getAllStudent,
   createStudentProfile,
+  getAllStudent,
 };
