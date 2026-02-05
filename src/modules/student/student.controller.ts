@@ -16,17 +16,6 @@ const createStudentProfile = async (req: Request, res: Response) => {
   }
 };
 
-const getAllStudent = async (req: Request, res: Response) => {
-  try {
-    const result = await studentService.getAllStudent();
-
-    res.status(201).json({ success: true, data: result });
-  } catch (err: any) {
-    res.status(404).json({ success: false, message: err.message });
-  }
-};
-
 export const studentController = {
   createStudentProfile,
-  getAllStudent,
 };

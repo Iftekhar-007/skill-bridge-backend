@@ -36,13 +36,19 @@ const createStudentProfile = async (
   return result;
 };
 
-const getAllStudent = async () => {
-  const data = await prisma.studentProfile.findMany();
+// const getAllStudent = async () => {
+//   const data = await prisma.user.findMany({
+//     where: {
+//       role: UserRole.student,
+//     },
+//     // include: {
+//     //   studentProfile: true,
+//     // },
+//   });
 
-  return data;
-};
+//   return data;
+// };
 
 export const studentService = {
   createStudentProfile,
-  getAllStudent,
 };

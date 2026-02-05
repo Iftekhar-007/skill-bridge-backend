@@ -29,11 +29,11 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.use("/api/v1", adminRoutes);
 
-app.use("/api/v1", tutorRoutes);
+app.use("/tutor", tutorRoutes);
 
-app.use("/api/v1", bookingRoutes);
+app.use("/student", studentRoutes);
 
-app.use("/api/v1", studentRoutes);
+app.use("/booking", bookingRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World");

@@ -30,6 +30,19 @@ const createTutor = async (data: TutorProfile, userId: string) => {
   return result;
 };
 
+// const getAllTutor = async () => {
+//   const tutors = await prisma.user.findMany({
+//     where: {
+//       role: UserRole.tutor,
+//     },
+//     include: {
+//       tutorProfile: true,
+//     },
+//   });
+
+//   return tutors;
+// };
+
 const getAllTutor = async () => {
   const data = await prisma.tutorProfile.findMany({
     include: {
@@ -38,8 +51,6 @@ const getAllTutor = async () => {
           id: true,
           name: true,
           email: true,
-          image: true,
-          role: true,
         },
       },
     },

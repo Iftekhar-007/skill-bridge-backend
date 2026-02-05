@@ -5,12 +5,6 @@ import { studentController } from "./student.controller";
 
 const router = express.Router();
 
-router.get(
-  "/students",
-  authMiddle(UserRole.admin),
-  studentController.getAllStudent,
-);
-
 router.post(
   "/create-student",
   authMiddle(UserRole.student),

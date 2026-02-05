@@ -6,6 +6,18 @@ const router = express.Router();
 
 router.get("/users", authMiddle(UserRole.admin), adminController.getAllUser);
 
-router.get("/:userId", authMiddle(UserRole.admin), adminController.getUserById);
+router.get(
+  "/users/:userId",
+  authMiddle(UserRole.admin),
+  adminController.getUserById,
+);
+
+router.get(
+  "/students",
+  authMiddle(UserRole.admin),
+  adminController.getStudents,
+);
+
+router.get("/:studentId", adminController.getStudentById);
 
 export const adminRoutes = router;
