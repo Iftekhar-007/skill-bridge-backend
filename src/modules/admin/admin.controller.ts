@@ -26,7 +26,13 @@ const getUserById = async (req: Request, res: Response) => {
 
 const getStudents = async (req: Request, res: Response) => {
   try {
-    const data = await adminServices.getStudents();
+    if (!req.user) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
+    const data = await adminServices.getStudents({
+      id: req.user?.id as string,
+      role: req.user?.role as UserRole,
+    });
 
     res.status(200).json({ success: true, data: data });
   } catch (err: any) {

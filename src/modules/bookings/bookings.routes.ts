@@ -11,4 +11,10 @@ router.post(
   bookingController.createBooking,
 );
 
+router.get(
+  "/all-bookings",
+  authMiddle(UserRole.admin, UserRole.student, UserRole.tutor),
+  bookingController.getAllBookings,
+);
+
 export const bookingRoutes = router;

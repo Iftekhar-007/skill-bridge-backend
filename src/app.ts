@@ -7,6 +7,7 @@ import { tutorRoutes } from "./modules/tutor/tutor.routes";
 import { adminRoutes } from "./modules/admin/admin.routes";
 import { bookingRoutes } from "./modules/bookings/bookings.routes";
 import { studentRoutes } from "./modules/student/student.routes";
+import { categoryRouter } from "./modules/category/category.routes";
 
 // import errorHandler from "./middleware/globalError";
 // import { notFound } from "./middleware/notFound";
@@ -34,6 +35,8 @@ app.use("/tutor", tutorRoutes);
 app.use("/student", studentRoutes);
 
 app.use("/booking", bookingRoutes);
+
+app.use("/category", categoryRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World");

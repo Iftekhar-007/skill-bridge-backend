@@ -17,12 +17,27 @@ const getUserById = async (userId: string) => {
   return data;
 };
 
-const getStudents = async () => {
-  const data = await prisma.studentProfile.findMany({
-    include: { user: true },
-  });
+const getStudents = async (user: { id: string; role: UserRole }) => {
+  if (user.role === UserRole.admin) {
+    return prisma.studentProfile.findMany({
+      include: { user: true },
+    });
+  }
 
-  return data;
+  if (user.role === UserRole.tutor) {
+    return prisma.studentProfile.findMany({
+      where: {
+        bookings: {
+          some: {
+            tutorId: user.id,
+          },
+        },
+      },
+      include: { user: true },
+    });
+  }
+
+  throw new Error("You are not allowed to view student list");
 };
 
 const getStudentById = async (
@@ -44,19 +59,6 @@ const getStudentById = async (
 
   if (user.role === UserRole.student && user.id === data.userId) {
     return data;
-  }
-
-  if (user.role === UserRole.tutor) {
-    const hasBooking = await prisma.bookings.findFirst({
-      where: {
-        tutorId: user.id,
-        studentId: data.id,
-      },
-    });
-
-    if (hasBooking) {
-      return data;
-    }
   }
 
   // return data;

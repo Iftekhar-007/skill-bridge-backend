@@ -8,7 +8,7 @@ const createTutor = async (req: Request, res: Response, next: NextFunction) => {
     if (!user) {
       return res.status(403).json({ success: false, message: "forbidden!" });
     }
-    const result = await tutorService.createTutor(req.body, user?.id as string);
+    const result = await tutorService.createTutor(user?.id as string, req.body);
 
     res.status(201).json(result);
   } catch (err: any) {

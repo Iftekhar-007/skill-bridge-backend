@@ -17,7 +17,7 @@ declare global {
         id: string;
         email: string;
         name: string;
-        role: string;
+        role: UserRole;
       };
     }
   }
@@ -40,7 +40,7 @@ const authMiddle = (...roles: UserRole[]) => {
       id: session.user.id,
       email: session.user.email,
       name: session.user.name,
-      role: session.user.role as string,
+      role: session.user.role as UserRole,
     };
 
     if (roles && !roles.includes(req.user.role as UserRole)) {

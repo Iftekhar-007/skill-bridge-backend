@@ -14,7 +14,7 @@ router.get(
 
 router.get(
   "/students",
-  authMiddle(UserRole.admin),
+  authMiddle(UserRole.admin, UserRole.tutor),
   adminController.getStudents,
 );
 
