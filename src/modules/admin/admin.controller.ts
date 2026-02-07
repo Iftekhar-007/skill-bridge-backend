@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { adminServices } from "./admin.service";
 import { UserRole } from "../../middlewares/auth";
+import { UserStatus } from "../../../generated/prisma/enums";
 
 const getAllUser = async (req: Request, res: Response) => {
   try {
@@ -56,9 +57,26 @@ const getStudentById = async (req: Request, res: Response) => {
   }
 };
 
+const updateUserStatus = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const { status } = req.body as { status: UserStatus };
+
+    const result = await adminServices.updateUserStatus(
+      userId as string,
+      status,
+    );
+
+    res.status(201).json({ success: true, data: result });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
 export const adminController = {
   getAllUser,
   getUserById,
   getStudents,
   getStudentById,
+  updateUserStatus,
 };

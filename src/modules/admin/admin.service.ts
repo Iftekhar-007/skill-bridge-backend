@@ -1,3 +1,4 @@
+import { UserStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { UserRole } from "../../middlewares/auth";
 
@@ -66,9 +67,29 @@ const getStudentById = async (
   throw new Error("you are not allowed to view this route");
 };
 
+const updateUserStatus = async (userId: string, status: UserStatus) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (user.role === UserRole.admin) {
+    throw new Error("Cannot change another admin's status");
+  }
+
+  return prisma.user.update({
+    where: { id: userId },
+    data: { status },
+  });
+};
+
 export const adminServices = {
   getAllUser,
   getUserById,
   getStudents,
   getStudentById,
+  updateUserStatus,
 };

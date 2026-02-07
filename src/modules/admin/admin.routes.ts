@@ -18,6 +18,12 @@ router.get(
   adminController.getStudents,
 );
 
+router.patch(
+  "/users/status/:userId",
+  authMiddle(UserRole.admin),
+  adminController.updateUserStatus,
+);
+
 router.get("/:studentId", adminController.getStudentById);
 
 export const adminRoutes = router;

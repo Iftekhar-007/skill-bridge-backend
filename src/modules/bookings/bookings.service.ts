@@ -90,6 +90,10 @@ const getAllBookings = async (user: { id: string; role: UserRole }) => {
 
   if (user.role === UserRole.student) {
     const data = await prisma.bookings.findMany({
+      include: {
+        student: true,
+        tutor: true,
+      },
       where: {
         student: {
           userId: user.id,
@@ -102,6 +106,10 @@ const getAllBookings = async (user: { id: string; role: UserRole }) => {
 
   if (user.role === UserRole.tutor) {
     const data = await prisma.bookings.findMany({
+      include: {
+        student: true,
+        tutor: true,
+      },
       where: {
         tutor: {
           userId: user.id,

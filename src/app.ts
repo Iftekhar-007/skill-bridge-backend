@@ -8,6 +8,7 @@ import { adminRoutes } from "./modules/admin/admin.routes";
 import { bookingRoutes } from "./modules/bookings/bookings.routes";
 import { studentRoutes } from "./modules/student/student.routes";
 import { categoryRouter } from "./modules/category/category.routes";
+import { reviewRoutes } from "./modules/reviews/reviews.routes";
 
 // import errorHandler from "./middleware/globalError";
 // import { notFound } from "./middleware/notFound";
@@ -37,6 +38,8 @@ app.use("/student", studentRoutes);
 app.use("/booking", bookingRoutes);
 
 app.use("/category", categoryRouter);
+
+app.use("/review", reviewRoutes);
 
 app.get("/", (req, res) => {
   res.send("Hello World");
