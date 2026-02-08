@@ -1,4 +1,5 @@
 import { TutorProfile } from "../../../generated/prisma/client";
+import { TutorProfileWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 import { UserRole } from "../../middlewares/auth";
 
@@ -91,14 +92,37 @@ const createTutor = async (
 //   return tutors;
 // };
 
-const getAllTutor = async () => {
+const getAllTutor = async (payload: { search: string | undefined }) => {
+  const andOptions: TutorProfileWhereInput[] = [];
+  if (payload.search) {
+    andOptions.push({
+      expertise: {
+        some: {
+          category: {
+            title: {
+              contains: payload.search,
+              mode: "insensitive",
+            },
+          },
+        },
+      },
+    });
+  }
   const data = await prisma.tutorProfile.findMany({
+    where: {
+      AND: andOptions,
+    },
     include: {
       user: {
         select: {
           id: true,
           name: true,
           email: true,
+        },
+      },
+      expertise: {
+        include: {
+          category: true,
         },
       },
     },

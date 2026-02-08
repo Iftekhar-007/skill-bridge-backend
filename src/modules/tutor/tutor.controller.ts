@@ -19,7 +19,14 @@ const createTutor = async (req: Request, res: Response, next: NextFunction) => {
 
 const getAllTutor = async (req: Request, res: Response) => {
   try {
-    const data = await tutorService.getAllTutor();
+    const { search } = req.query;
+
+    const searchStr = typeof search === "string" ? search : undefined;
+
+    const expertise = req.query.expertise
+      ? (req.query.expertise as string).split(",")
+      : [];
+    const data = await tutorService.getAllTutor({ search: searchStr });
     res.status(200).json({ success: true, data: data });
   } catch (err: any) {
     res.status(404).json({ success: false, message: err.message });
