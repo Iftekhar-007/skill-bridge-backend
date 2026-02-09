@@ -26,7 +26,15 @@ const getAllTutor = async (req: Request, res: Response) => {
     const expertise = req.query.expertise
       ? (req.query.expertise as string).split(",")
       : [];
-    const data = await tutorService.getAllTutor({ search: searchStr });
+
+    const rating = req.query.averageRating
+      ? Number(req.query.averageRating as string)
+      : undefined;
+    const data = await tutorService.getAllTutor({
+      search: searchStr,
+      expertise,
+      rating,
+    });
     res.status(200).json({ success: true, data: data });
   } catch (err: any) {
     res.status(404).json({ success: false, message: err.message });

@@ -5,7 +5,13 @@ import { UserRole } from "../../middlewares/auth";
 const getAllUser = async () => {
   const data = await prisma.user.findMany();
 
-  return data;
+  const total = await prisma.user.aggregate({
+    _count: {
+      id: true,
+    },
+  });
+
+  return { data, total };
 };
 
 const getUserById = async (userId: string) => {
