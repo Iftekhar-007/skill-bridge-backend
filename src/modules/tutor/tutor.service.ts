@@ -176,6 +176,11 @@ const getTutorById = async (tutorId: string) => {
           role: true,
         },
       },
+      _count: {
+        select: {
+          bookings: true,
+        },
+      },
     },
   });
 

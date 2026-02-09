@@ -53,7 +53,13 @@ const getStudentById = async (
 ) => {
   const data = await prisma.studentProfile.findUnique({
     where: { id: studentId },
-    include: { user: true },
+    include: {
+      user: true,
+      bookings: true,
+      _count: {
+        select: { bookings: true },
+      },
+    },
   });
 
   if (!data) {
