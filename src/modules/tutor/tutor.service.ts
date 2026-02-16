@@ -92,27 +92,117 @@ const createTutor = async (
 //   return tutors;
 // };
 
+// const getAllTutor = async (payload: {
+//   search: string | undefined;
+//   expertise: string[] | [];
+//   rating: number | undefined;
+// }) => {
+//   const andOptions: TutorProfileWhereInput[] = [];
+//   if (payload.search) {
+//     andOptions.push({
+//       expertise: {
+//         some: {
+//           category: {
+//             title: {
+//               contains: payload.search,
+//               mode: "insensitive",
+//             },
+//           },
+//         },
+//       },
+//     });
+//   }
+
+//   if (payload.expertise.length > 0) {
+//     andOptions.push({
+//       expertise: {
+//         some: {
+//           categoryId: {
+//             in: payload.expertise,
+//           },
+//         },
+//       },
+//     });
+//   }
+
+//   if (payload.rating) {
+//     andOptions.push({
+//       averageRating: payload.rating as number,
+//     });
+//   }
+//   const data = await prisma.tutorProfile.findMany({
+//     where: {
+//       AND: andOptions,
+//     },
+//     include: {
+//       user: {
+//         select: {
+//           id: true,
+//           name: true,
+//           email: true,
+//         },
+//       },
+//       expertise: {
+//         include: {
+//           category: true,
+//         },
+//       },
+//       bookings: true,
+//       reviews: true,
+//       _count: true,
+//     },
+//   });
+
+//   const total = await prisma.tutorProfile.aggregate({
+//     _count: {
+//       id: true,
+//     },
+//   });
+
+//   return { data, total };
+// };
+
 const getAllTutor = async (payload: {
   search: string | undefined;
-  expertise: string[] | [];
+  expertise: string[];
   rating: number | undefined;
+  pageNumber: number;
+  limitNumber: number;
+  skip: number;
+  sortBy: string;
+  sortOrder: "asc" | "desc";
 }) => {
   const andOptions: TutorProfileWhereInput[] = [];
+
+  // search filter
   if (payload.search) {
     andOptions.push({
-      expertise: {
-        some: {
-          category: {
-            title: {
+      OR: [
+        {
+          user: {
+            name: {
               contains: payload.search,
               mode: "insensitive",
             },
           },
         },
-      },
+        {
+          expertise: {
+            some: {
+              category: {
+                title: {
+                  contains: payload.search,
+                  mode: "insensitive",
+                },
+              },
+            },
+          },
+        },
+      ],
     });
   }
 
+  // expertise filter
   if (payload.expertise.length > 0) {
     andOptions.push({
       expertise: {
@@ -125,15 +215,28 @@ const getAllTutor = async (payload: {
     });
   }
 
-  if (payload.rating) {
+  // rating filter
+  if (payload.rating !== undefined) {
     andOptions.push({
-      averageRating: payload.rating as number,
+      averageRating: {
+        gte: payload.rating,
+      },
     });
   }
+
+  // main query
   const data = await prisma.tutorProfile.findMany({
+    skip: payload.skip,
+    take: payload.limitNumber,
+
     where: {
       AND: andOptions,
     },
+
+    orderBy: {
+      [payload.sortBy]: payload.sortOrder,
+    },
+
     include: {
       user: {
         select: {
@@ -149,17 +252,27 @@ const getAllTutor = async (payload: {
       },
       bookings: true,
       reviews: true,
-      _count: true,
+
+      _count: {
+        select: {
+          reviews: true,
+          bookings: true,
+        },
+      },
     },
   });
 
-  const total = await prisma.tutorProfile.aggregate({
-    _count: {
-      id: true,
+  // total count with filter
+  const total = await prisma.tutorProfile.count({
+    where: {
+      AND: andOptions,
     },
   });
 
-  return { data, total };
+  return {
+    data,
+    total,
+  };
 };
 
 const getTutorById = async (tutorId: string) => {

@@ -25,7 +25,19 @@ const getAllCategory = async (req: Request, res: Response) => {
   }
 };
 
+const getSingleCategory = async (req: Request, res: Response) => {
+  try {
+    const { categoryid } = req.params;
+    const data = await categoryServices.getSingleCategory(categoryid as string);
+
+    res.status(201).json({ success: true, data: data });
+  } catch (err: any) {
+    res.status(404).json({ success: false, message: err.message });
+  }
+};
+
 export const categoryController = {
   createCategory,
   getAllCategory,
+  getSingleCategory,
 };
