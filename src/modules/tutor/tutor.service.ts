@@ -3,37 +3,6 @@ import { TutorProfileWhereInput } from "../../../generated/prisma/models";
 import { prisma } from "../../lib/prisma";
 import { UserRole } from "../../middlewares/auth";
 
-// const createTutor = async (data: TutorProfile, userId: string) => {
-//   // const { bio, hourlyRate, startTime, endTime, categoryIds } = payload;
-//   const isTutorAlready = await prisma.tutorProfile.findUnique({
-//     where: {
-//       userId: userId,
-//     },
-//   });
-//   if (isTutorAlready) {
-//     throw new Error("one user can only have one tutor profile");
-//   }
-
-//   const userData = await prisma.user.findUnique({
-//     where: {
-//       id: userId,
-//     },
-//   });
-//   if (userData?.role !== UserRole.tutor) {
-//     throw new Error("You are not allowed to access this route!");
-//   }
-//   const result = await prisma.tutorProfile.create({
-//     data: {
-//       ...data,
-//       userId,
-//     },
-//   });
-
-//   return result;
-// };
-
-// import { prisma } from "../../lib/prisma";
-
 const createTutor = async (
   userId: string,
   payload: {
@@ -57,8 +26,8 @@ const createTutor = async (
       userId,
       bio: bio as string,
       hourlyRate,
-      startTime: new Date(startTime),
-      endTime: new Date(endTime),
+      startTime,
+      endTime,
 
       // create TutorCategories entries
       expertise: {
@@ -289,8 +258,31 @@ const getTutorById = async (tutorId: string) => {
           role: true,
         },
       },
+      expertise: {
+        include: {
+          category: true,
+        },
+      },
       _count: {
         select: {
+          bookings: true,
+        },
+      },
+    },
+  });
+
+  return data;
+};
+
+const getMyTutorProfile = async (userid: string) => {
+  const data = await prisma.user.findUnique({
+    where: {
+      id: userid,
+    },
+    include: {
+      tutorProfile: {
+        include: {
+          expertise: true,
           bookings: true,
         },
       },
@@ -304,4 +296,5 @@ export const tutorService = {
   createTutor,
   getAllTutor,
   getTutorById,
+  getMyTutorProfile,
 };

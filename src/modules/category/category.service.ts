@@ -48,7 +48,15 @@ const getSingleCategory = async (categoryid: string) => {
       id: categoryid,
     },
     include: {
-      tutors: true,
+      tutors: {
+        include: {
+          tutor: {
+            include: {
+              user: true,
+            },
+          },
+        },
+      },
     },
   });
 

@@ -14,4 +14,10 @@ router.post(
 
 router.get("/:tutorId", tutorController.getTutorById);
 
+router.get(
+  "/my-tutor-profile",
+  authMiddle(UserRole.tutor),
+  tutorController.getMyTutorProfile,
+);
+
 export const tutorRoutes = router;

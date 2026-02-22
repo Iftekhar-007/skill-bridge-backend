@@ -99,8 +99,23 @@ const getTutorById = async (req: Request, res: Response) => {
   }
 };
 
+export const getMyTutorProfile = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+
+    const userId = user?.id;
+
+    const result = await tutorService.getMyTutorProfile(userId as string);
+
+    res.status(200).json({ success: true, data: result });
+  } catch (err: any) {
+    res.status(404).json({ success: false, message: err.message });
+  }
+};
+
 export const tutorController = {
   createTutor,
   getAllTutor,
   getTutorById,
+  getMyTutorProfile,
 };

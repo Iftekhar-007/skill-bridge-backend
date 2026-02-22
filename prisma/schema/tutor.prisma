@@ -4,8 +4,8 @@ model TutorProfile {
     userId        String            @unique
     user          User              @relation(fields: [userId], references: [id])
     availability  Availability      @default(AVAILABLE)
-    startTime     DateTime
-    endTime       DateTime
+    startTime     String
+    endTime       String
     bio           String?
     hourlyRate    Int               @default(0)
     averageRating Float             @default(0)

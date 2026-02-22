@@ -1,3 +1,4 @@
+import { BookingsStatus } from "../../../generated/prisma/enums";
 import { prisma } from "../../lib/prisma";
 import { UserRole } from "../../middlewares/auth";
 
@@ -5,25 +6,6 @@ enum Availability {
   AVAILABLE,
   UNAVAILABLE,
 }
-
-// const createBooking = async (userId: string, payload: any) => {
-//   const studentProfile = await prisma.studentProfile.findUnique({
-//     where: { userId: userId },
-//   });
-
-//   const booking = await prisma.bookings.create({
-//     data: {
-//       studentId: studentProfile?.id as string,
-//       tutorId: payload.tutorId as string,
-//       date: new Date(payload.date),
-//       startTime: new Date(payload.startTime),
-//       endTime: new Date(payload.endTime),
-//       price: payload.price,
-//     },
-//   });
-
-//   return booking;
-// };
 
 const createBooking = async (userId: string, payload: any) => {
   return await prisma.$transaction(async (tx) => {
@@ -82,6 +64,7 @@ const getAllBookings = async (user: { id: string; role: UserRole }) => {
       include: {
         student: true,
         tutor: true,
+        reviews: true,
       },
     });
 
@@ -93,6 +76,7 @@ const getAllBookings = async (user: { id: string; role: UserRole }) => {
       include: {
         student: true,
         tutor: true,
+        reviews: true,
       },
       where: {
         student: {
@@ -109,6 +93,7 @@ const getAllBookings = async (user: { id: string; role: UserRole }) => {
       include: {
         student: true,
         tutor: true,
+        reviews: true,
       },
       where: {
         tutor: {
@@ -121,7 +106,93 @@ const getAllBookings = async (user: { id: string; role: UserRole }) => {
   }
 };
 
+// export const updateBookingStatusService = async (
+//   bookingId: string,
+//   tutorId: string,
+//   status: BookingsStatus,
+// ) => {
+//   // Verify the booking exists and belongs to this tutor
+//   const booking = await prisma.bookings.findUnique({
+//     where: { id: bookingId },
+//   });
+
+//   console.log("tutorId from JWT:", tutorId);
+//   console.log("booking.tutorId:", booking?.tutorId);
+
+//   if (!booking) {
+//     throw new Error("Booking not found");
+//   }
+
+//   if (booking.tutorId !== tutorId) {
+//     throw new Error("Unauthorized: This booking does not belong to you");
+//   }
+
+//   // Guard against invalid transitions
+//   if (booking.status === BookingsStatus.CANCELLED) {
+//     throw new Error("Cannot update a cancelled booking");
+//   }
+
+//   if (booking.status === BookingsStatus.COMPLETED) {
+//     throw new Error("Cannot update a completed booking");
+//   }
+
+//   const updated = await prisma.bookings.update({
+//     where: { id: bookingId },
+//     data: { status },
+//   });
+
+//   return updated;
+// };
+
+export const updateBookingStatusService = async (
+  bookingId: string,
+  tutorId: string,
+  status: BookingsStatus,
+) => {
+  const booking = await prisma.bookings.findUnique({
+    where: { id: bookingId },
+  });
+
+  if (!booking) {
+    throw new Error("Booking not found");
+  }
+
+  if (booking.tutorId !== tutorId) {
+    throw new Error("Unauthorized: This booking does not belong to you");
+  }
+
+  if (booking.status === BookingsStatus.CANCELLED) {
+    throw new Error("Cannot update a cancelled booking");
+  }
+
+  if (booking.status === BookingsStatus.COMPLETED) {
+    throw new Error("Cannot update a completed booking");
+  }
+
+  // ✅ Use transaction so both updates are atomic
+  const [updated] = await prisma.$transaction([
+    prisma.bookings.update({
+      where: { id: bookingId },
+      data: { status },
+    }),
+
+    // ✅ If completed or cancelled → tutor becomes AVAILABLE again
+    ...(status === BookingsStatus.COMPLETED ||
+    status === BookingsStatus.CANCELLED
+      ? [
+          prisma.tutorProfile.update({
+            where: { id: tutorId },
+            data: { availability: "AVAILABLE" },
+          }),
+        ]
+      : []),
+  ]);
+
+  return updated;
+};
+
 export const bookingServices = {
   createBooking,
   getAllBookings,
+  updateBookingStatusService,
 };
