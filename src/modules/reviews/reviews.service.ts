@@ -57,8 +57,16 @@ const createReview = async (
 const getAllReviews = async () => {
   return prisma.reviews.findMany({
     include: {
-      student: true,
-      tutor: true,
+      student: {
+        include: {
+          user: true,
+        },
+      },
+      tutor: {
+        include: {
+          user: true,
+        },
+      },
       booking: true,
     },
     orderBy: { createdAt: "desc" },

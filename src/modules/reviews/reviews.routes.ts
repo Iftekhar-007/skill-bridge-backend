@@ -10,11 +10,7 @@ router.post(
   reviewController.createReview,
 );
 
-router.get(
-  "/all-reviews",
-  authMiddle(UserRole.admin),
-  reviewController.getAllReviews,
-);
+router.get("/all-reviews", reviewController.getAllReviews);
 
 router.get("/:tutorId", reviewController.getTutorReviews);
 router.get(

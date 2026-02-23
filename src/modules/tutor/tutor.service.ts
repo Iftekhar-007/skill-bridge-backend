@@ -263,6 +263,16 @@ const getTutorById = async (tutorId: string) => {
           category: true,
         },
       },
+      reviews: {
+        include: {
+          student: {
+            include: {
+              user: true,
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      },
       _count: {
         select: {
           bookings: true,
