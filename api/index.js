@@ -1380,19 +1380,8 @@ app.get("/", (req, res) => {
 });
 var app_default = app;
 
-// src/server.ts
-var PORT = process.env.PORT || 5e3;
-async function main() {
-  try {
-    prisma.$connect();
-    console.log("server is connected");
-    app_default.listen(PORT, () => {
-      console.log("Server is running on:", PORT);
-    });
-  } catch (error) {
-    console.error("Error connectiing to the database:", error);
-    prisma.$disconnect();
-    process.exit(1);
-  }
-}
-main();
+// src/index.ts
+var index_default = app_default;
+export {
+  index_default as default
+};
