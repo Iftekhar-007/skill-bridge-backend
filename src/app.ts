@@ -9,6 +9,8 @@ import { bookingRoutes } from "./modules/bookings/bookings.routes";
 import { studentRoutes } from "./modules/student/student.routes";
 import { categoryRouter } from "./modules/category/category.routes";
 import { reviewRoutes } from "./modules/reviews/reviews.routes";
+import { notFound } from "./middlewares/notFound";
+import errorHandler from "./middlewares/globalError";
 
 // import errorHandler from "./middleware/globalError";
 // import { notFound } from "./middleware/notFound";
@@ -40,6 +42,10 @@ app.use("/booking", bookingRoutes);
 app.use("/category", categoryRouter);
 
 app.use("/review", reviewRoutes);
+
+app.use(notFound);
+
+app.use(errorHandler);
 
 app.get("/", (req, res) => {
   res.send("Hello World");
