@@ -18,6 +18,11 @@ import errorHandler from "./middlewares/globalError";
 const app = express();
 const port = process.env.PORT;
 
+const allowedOrigins = [
+  process.env.BETTER_AUTH_URL || "https://skill-bridge-backend-pi.vercel.app",
+  process.env.BETTER_AUTH_TRUSTED_ORIGINS, // Production frontend URL
+].filter(Boolean); // Remove undefined values
+
 app.use(
   cors({
     origin: [
