@@ -29,6 +29,10 @@ app.use(
 );
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
+
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.use("/api/v1", adminRoutes);
@@ -46,10 +50,6 @@ app.use("/review", reviewRoutes);
 app.use(notFound);
 
 app.use(errorHandler);
-
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
 
 // app.use(notFound);
 
